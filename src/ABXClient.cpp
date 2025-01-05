@@ -34,7 +34,7 @@ bool ABXClient::create_connection()
         return false;
     }
 
-    cout << "Client Connected to ABX server with socket|IP|port:" << sockfd << server_ip << "," << port << endl;
+    cout << "Client Connected to ABX server with socket|IP|port:" << sockfd << ","<< server_ip << "," << port << endl;
 
     return true;
 }
@@ -64,30 +64,31 @@ bool ABXClient::send_request(Request& request)
 }
 
 // Handle the response from the server
-void ABXClient::handle_response()
+int ABXClient::handle_response(vector<int>& SEQ_VEC)
 {
     char buffer[1024];  // Buffer to store received data
-//    cout << "Function Called sockfd" << sockfd << endl;
-    while (true)
-    {
-        int received = recv(sockfd, buffer, sizeof(buffer), 0);
-        if (received < 0)
-        {
-            cerr << "Error: Could not receive data." << endl;
-            break;
-        }
-        else if (received == 0)
-        {
-            cout << "Server closed the connection." << endl;
-            break;
-        }
-//        cout << "EVERYTHING Good." << endl;
-        int index = 0;
-        while (index + 13 <= received)
-        {  // Each packet is 13 bytes long
-            Packet packet(&buffer[index]);
-            packet.print();
-            index += 13;
-        }
-    }
+    int received = recv(sockfd, buffer, sizeof(buffer), 0);
+	if (received < 0)
+	{
+		cerr << "Error: Could not receive data." << endl;
+//		break;
+	}
+	else if (received == 0)
+	{
+		cout << "Server closed the connection." << endl;
+//		break;
+	}
+	else
+	{
+		int index = 0;
+		while (index + 17 <= received)
+		{
+			Packet packet(&buffer[index]);
+			packet.print();
+			SEQ_VEC.push_back(packet.packet_seq);
+			index += 17;
+		}
+
+	}
+	return received;
 }
