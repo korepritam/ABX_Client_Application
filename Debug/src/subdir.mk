@@ -6,24 +6,27 @@
 CPP_SRCS += \
 ../src/ABXClient.cpp \
 ../src/ABX_Client_Application.cpp \
-../src/ConfigReader.cpp 
+../src/ConfigReader.cpp \
+../src/GlobalMembers.cpp 
 
 CPP_DEPS += \
 ./src/ABXClient.d \
 ./src/ABX_Client_Application.d \
-./src/ConfigReader.d 
+./src/ConfigReader.d \
+./src/GlobalMembers.d 
 
 OBJS += \
 ./src/ABXClient.o \
 ./src/ABX_Client_Application.o \
-./src/ConfigReader.o 
+./src/ConfigReader.o \
+./src/GlobalMembers.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes
 src/%.o: ../src/%.cpp src/subdir.mk
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	g++ -std=c++17 -I"/Users/pritam/cpp-workspace/ABX_Client_Application/include" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	g++ -std=c++17 -I"/Users/pritam/cpp-workspace/ABX_Client_Application/include" -I"/Users/pritam/cpp-workspace/ABX_Client_Application/include/json/include" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -31,7 +34,7 @@ src/%.o: ../src/%.cpp src/subdir.mk
 clean: clean-src
 
 clean-src:
-	-$(RM) ./src/ABXClient.d ./src/ABXClient.o ./src/ABX_Client_Application.d ./src/ABX_Client_Application.o ./src/ConfigReader.d ./src/ConfigReader.o
+	-$(RM) ./src/ABXClient.d ./src/ABXClient.o ./src/ABX_Client_Application.d ./src/ABX_Client_Application.o ./src/ConfigReader.d ./src/ConfigReader.o ./src/GlobalMembers.d ./src/GlobalMembers.o
 
 .PHONY: clean-src
 

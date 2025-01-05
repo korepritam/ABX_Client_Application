@@ -6,6 +6,7 @@
  */
 
 #include "ABXClient.h"
+#include "GlobalMembers.h"
 
 ABXClient::~ABXClient()
 {
@@ -84,7 +85,8 @@ int ABXClient::handle_response(vector<int>& SEQ_VEC)
 		while (index + 17 <= received)
 		{
 			Packet packet(&buffer[index]);
-			packet.print();
+			packet.Print();
+			GetJSONWriter()->WriteToJSONFile(packet);
 			SEQ_VEC.push_back(packet.packet_seq);
 			index += 17;
 		}

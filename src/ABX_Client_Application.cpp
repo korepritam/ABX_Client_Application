@@ -6,56 +6,55 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
-#include "ABXClient.h"
+#include "GlobalMembers.h"
+
 int main()
 {
-	ConfigReader::getInstance("ABX_Client_Config.cfg");
-	vector<int> SEQ_VEC;
 
-	ABXClient client(ConfigReader::getInstance()->getValueString("SERVER_IP"), ConfigReader::getInstance()->getInt("SERVER_PORT"));
+	InitializeGlobalMembers();
 
-    if (!client.create_connection())
+    if (!GetABXClient()->create_connection())
     {
         return EXIT_FAILURE;
     }
 
+    //1. Request All Feed Packets.
     Request all_packet_request((int)RequestPayloadFormat::callType);
-	if (client.send_request(all_packet_request))
+	if (GetABXClient()->send_request(all_packet_request))
 	{
 		cout << "Send Request done: type " << (int)RequestPayloadFormat::callType << endl;
-//		client.handle_response(SEQ_VEC);
-		int recv_bytes = 1;
+		int recv_bytes = INT_MAX;
 		while(recv_bytes > 0)
-			recv_bytes = client.handle_response(SEQ_VEC);
+		{
+			recv_bytes = GetABXClient()->handle_response(GetSeqVector());
+		}
 	}
 	else
 	{
 		cerr << "Send Request Not done: type " << (int)RequestPayloadFormat::callType << endl;
 	}
 
+	PrintSeqVector();
 
-	cout << "Printing Seq Number:";
-	for(auto &seq : SEQ_VEC) cout << seq << ",";
-	cout << endl;
-
-    if (!client.create_connection())
+    if (!GetABXClient()->create_connection())
     {
         return EXIT_FAILURE;
     }
 
-    int seq_counter = 1, idx_counter = 0, last_counter = SEQ_VEC.back();
-    while(idx_counter < SEQ_VEC.size() && seq_counter<last_counter)
+    //2. Request Missing Sequence Packets.
+    int seq_counter = 1, idx_counter = 0, last_counter = GetSeqVector().back();
+    while(idx_counter < GetSeqVector().size() && seq_counter<last_counter)
     {
-    	if(SEQ_VEC[idx_counter] == seq_counter) {
+    	if(GetSeqVector()[idx_counter] == seq_counter) {
     		idx_counter++;
     		seq_counter++;
     	}
-    	else if(SEQ_VEC[idx_counter] > seq_counter) {
+    	else if(GetSeqVector()[idx_counter] > seq_counter) {
     		Request resend_request((int)RequestPayloadFormat::resendSeq, seq_counter);
-    		if (client.send_request(resend_request))
+    		if (GetABXClient()->send_request(resend_request))
     		{
     			cout << "Send Request done: type " << (int)RequestPayloadFormat::resendSeq << endl;
-    			client.handle_response(SEQ_VEC);
+    			GetABXClient()->handle_response(GetSeqVector());
     		}
     		else
     		{
@@ -66,12 +65,10 @@ int main()
     	}
     }
 
-    sort(SEQ_VEC.begin(),SEQ_VEC.end());
-	cout << "Printing Final Seq Number:";
-	for(auto &seq : SEQ_VEC) cout << seq << ",";
-	cout << endl;
+    SortSeqVector();
+    PrintSeqVector();
 
-	client.close_connection();
+	DestroyGlobalMembers();
 
 	return EXIT_SUCCESS;
 }

@@ -9,6 +9,7 @@
 #define COMMONSTRUCTURES_H_
 
 #include "ConfigReader.h"
+#include "nlohmann/json.hpp"
 
 enum RequestPayloadFormat
 {
@@ -21,20 +22,20 @@ class Packet
 	public:
 		string symbol;
 		char buy_sell_indicator;
-		int quantity;
-		int price;
-		int packet_seq;
+	    int32_t quantity;
+	    int32_t price;
+	    int32_t packet_seq;
 
 		Packet(const char* data)
 		{
 			symbol = string(reinterpret_cast<const char*>(data), 4);
 			buy_sell_indicator = data[4];
-			quantity = ntohl(*reinterpret_cast<const int*>(&data[5]));
-			price = ntohl(*reinterpret_cast<const int*>(&data[9]));
-			packet_seq = ntohl(*reinterpret_cast<const int*>(&data[13]));
+			quantity = ntohl(*reinterpret_cast<const int32_t*>(&data[5]));
+			price = ntohl(*reinterpret_cast<const int32_t*>(&data[9]));
+			packet_seq = ntohl(*reinterpret_cast<const int32_t*>(&data[13]));
 		}
 
-		void print()
+		void Print()
 		{
 			string side = (buy_sell_indicator == 'B') ? "Buy" : (buy_sell_indicator == 'S') ? "Sell" : "Unknown";
 			cout << "Packet: Symbol = " << symbol << ", Side = " << side
