@@ -61,3 +61,32 @@ bool ABXClient::send_request(Request& request)
 
     return true;
 }
+
+// Handle the response from the server
+void ABXClient::handle_response()
+{
+    char buffer[1024];  // Buffer to store received data
+
+    while (true)
+    {
+        int received = recv(sockfd, buffer, sizeof(buffer), 0);
+        if (received < 0)
+        {
+            std::cerr << "Error: Could not receive data." << std::endl;
+            break;
+        }
+        else if (received == 0)
+        {
+            std::cout << "Server closed the connection." << std::endl;
+            break;
+        }
+
+        int index = 0;
+        while (index + 13 <= received)
+        {  // Each packet is 13 bytes long
+            Packet packet(&buffer[index]);
+            packet.print();
+            index += 13;
+        }
+    }
+}

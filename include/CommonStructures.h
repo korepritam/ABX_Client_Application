@@ -25,7 +25,7 @@ class Packet
 		int price;
 		int packet_seq;
 
-		Packet(const uint8_t* data)
+		Packet(const char* data)
 		{
 			symbol = string(reinterpret_cast<const char*>(data), 4);
 			buy_sell_indicator = data[4];

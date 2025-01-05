@@ -20,9 +20,10 @@ class ABXClient
 	public:
 		ABXClient(const std::string& server_ip, int port) : server_ip(server_ip), port(port), sockfd(-1) {}
 		~ABXClient();
-		bool create_connection();					// Establish the connection to the server
-		void close_connection();					// Close the connection
+		bool create_connection();				// Establish the connection to the server
+		void close_connection();				// Close the connection
 		bool send_request(Request& request);	// Send the request to the server
+		void handle_response();		// Handle the response from the server
 };
 
 
