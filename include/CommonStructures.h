@@ -46,13 +46,16 @@ class Packet
 class Request
 {
 	public:
-		char call_type;
-		char resend_seq;
+		uint8_t call_type;
+		uint8_t resend_seq;
 
-		Request(char call_type, char resend_seq = 0) : call_type(call_type), resend_seq(resend_seq) {}
+		Request(uint8_t call_type_, uint8_t resend_seq = 0) : call_type(call_type_), resend_seq(resend_seq)
+		{
+//			cout << "InConstructor " << call_type << "," << call_type_ << endl;
+		}
 
 		//Convert the request into a binary payload
-		void to_payload(char* payload)
+		void to_payload(uint8_t* payload)
 		{
 			payload[0] = call_type;
 			payload[1] = resend_seq;

@@ -47,8 +47,9 @@ void ABXClient::close_connection()
 
 bool ABXClient::send_request(Request& request)
 {
-    char payload[2];
+    uint8_t payload[2];
     request.to_payload(payload);
+    cout << "Sent request Payload: CallType = " << payload[0] << ", ResendSeq = " << payload[1] << endl;
 
     int sent = send(sockfd, payload, sizeof(payload), 0);
     if(sent < 0)
@@ -57,7 +58,7 @@ bool ABXClient::send_request(Request& request)
         return false;
     }
 
-    cout << "Sent request: Call Type = " << (int)request.call_type << ", Resend Seq = " << (int)request.resend_seq << endl;
+//    cout << "Sent request: CallType = " << (int)request.call_type << ", ResendSeq = " << request.resend_seq_str << endl;
 
     return true;
 }
@@ -66,21 +67,21 @@ bool ABXClient::send_request(Request& request)
 void ABXClient::handle_response()
 {
     char buffer[1024];  // Buffer to store received data
-
+//    cout << "Function Called sockfd" << sockfd << endl;
     while (true)
     {
         int received = recv(sockfd, buffer, sizeof(buffer), 0);
         if (received < 0)
         {
-            std::cerr << "Error: Could not receive data." << std::endl;
+            cerr << "Error: Could not receive data." << endl;
             break;
         }
         else if (received == 0)
         {
-            std::cout << "Server closed the connection." << std::endl;
+            cout << "Server closed the connection." << endl;
             break;
         }
-
+//        cout << "EVERYTHING Good." << endl;
         int index = 0;
         while (index + 13 <= received)
         {  // Each packet is 13 bytes long

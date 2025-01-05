@@ -7,7 +7,6 @@
 //============================================================================
 
 #include "ABXClient.h"
-
 int main()
 {
 	ConfigReader::getInstance("ABX_Client_Config.cfg");
@@ -19,38 +18,35 @@ int main()
         return EXIT_FAILURE;
     }
 
-    int choice;
-	cout << "Enter Choice : 1:callType 2:resendReq" << endl;	cin >> choice;
 
-    if(choice == 1)
+    Request all_packet_request((int)RequestPayloadFormat::callType);
+	if (client.send_request(all_packet_request))
+	{
+		cout << "Send Request done: type " << (int)RequestPayloadFormat::callType << endl;
+		client.handle_response();
+	}
+	else
+	{
+		cerr << "Send Request Not done: type " << (int)RequestPayloadFormat::callType << endl;
+	}
+
+    if (!client.create_connection())
     {
-		Request all_packet_request(RequestPayloadFormat::callType);
-		if (client.send_request(all_packet_request)) {
-			cout << "Send Request done: type " << (int)RequestPayloadFormat::callType << endl;
-			client.handle_response();
-		}
-		else {
-			cerr << "Send Request Not done: type " << (int)RequestPayloadFormat::callType << endl;
-		}
+        return EXIT_FAILURE;
     }
-    else if(choice == 2)
-    {
-		char resend_seq;
-		cout << "Enter the sequence number to resend: "; cin >> resend_seq;
-		Request request(RequestPayloadFormat::resendSeq, resend_seq);
-		if (client.send_request(request))
-		{
-			cout << "Send Request done: type " << (int)RequestPayloadFormat::resendSeq << endl;
-		}
-		else
-		{
-			cerr << "Send Request Not done: type " << (int)RequestPayloadFormat::resendSeq << endl;
-		}
-    }
-    else
-    {
-    	cout << "Invalid Choice:" << choice << endl;
-    }
+
+    int resend_seq;
+	cout << "Enter the sequence number to resend: "; cin >> resend_seq;
+	Request resend_request((int)RequestPayloadFormat::resendSeq, resend_seq);
+	if (client.send_request(resend_request))
+	{
+		cout << "Send Request done: type " << (int)RequestPayloadFormat::resendSeq << endl;
+		client.handle_response();
+	}
+	else
+	{
+		cerr << "Send Request Not done: type " << (int)RequestPayloadFormat::resendSeq << endl;
+	}
 
 	client.close_connection();
 
