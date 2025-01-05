@@ -10,6 +10,12 @@
 
 #include "ConfigReader.h"
 
+enum RequestPayloadFormat
+{
+	callType=1,
+	resendSeq=2
+};
+
 class Packet
 {
 	public:
@@ -45,7 +51,7 @@ class Request
 
 		Request(char call_type, char resend_seq = 0) : call_type(call_type), resend_seq(resend_seq) {}
 
-		// Convert the request into a binary payload
+		//Convert the request into a binary payload
 		void to_payload(char* payload)
 		{
 			payload[0] = call_type;

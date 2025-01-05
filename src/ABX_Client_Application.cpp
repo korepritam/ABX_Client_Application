@@ -19,6 +19,27 @@ int main()
         return EXIT_FAILURE;
     }
 
+    Request all_packet_request(RequestPayloadFormat::callType);
+    if (client.send_request(all_packet_request)) {
+    	cout << "Send Request done: type " << (int)RequestPayloadFormat::callType << endl;
+    }
+    else {
+    	cerr << "Send Request Not done: type " << (int)RequestPayloadFormat::callType << endl;
+    }
+
+
+    char resend_seq;
+    cout << "Enter the sequence number to resend: "; cin >> resend_seq;
+    Request request(RequestPayloadFormat::resendSeq, resend_seq);
+    if (client.send_request(request))
+    {
+    	cout << "Send Request done: type " << (int)RequestPayloadFormat::resendSeq << endl;
+	}
+	else
+	{
+		cerr << "Send Request Not done: type " << (int)RequestPayloadFormat::resendSeq << endl;
+	}
+
 	client.close_connection();
 
 	return EXIT_SUCCESS;
