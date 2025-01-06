@@ -5,7 +5,7 @@ This project simulates a client interacting with an ABX mock exchange server. It
 ### Dependencies
 
 - **C++17** support in your compiler (e.g., GCC)
-- **Eclipse** IDE is used. The exe is in ***${Project}/Debug/.***
+- **Eclipse** IDE is used. The exe is in `ABX_Client_Application/Debug`
 - **Manual Compilation Tools**: `g++` C++ compiler or `Eclipse IDE`
 
 ### Setup and Building the Project
