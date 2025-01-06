@@ -1,3 +1,6 @@
+# ABX Mock Exchange Client
+
+This project simulates a client interacting with an ABX mock exchange server. It requests and handles packets from the order book and simulates stock exchange data.
 
 ### Dependencies
 
