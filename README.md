@@ -12,7 +12,7 @@ This project simulates a client interacting with an ABX mock exchange server. It
 
 Follow these steps to manually compile and run the project:
 
-#### 1. Clone the Repository
+#### 1. Instructions to execute ABX Application Client
 
 Clone this repository to your local machine using `git`:
 
